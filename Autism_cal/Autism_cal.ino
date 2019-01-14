@@ -1,3 +1,5 @@
+#include <LiquidCrystal_I2C.h>
+
 
 int bs[]={0,0,0,0,0,0,0,0,0,0};
 int bs1[]={0,0,0,0};
@@ -6,6 +8,8 @@ int state1=0,state2=0;
 int a,bb,e,f,c,i,neg,dot,d;
 float h;
 int b[10],l[10],b1[4],l1[4],b2[10],l2[10],l3[10],l4[10],equal,reset_b;
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
 void setup() {
 b2[0]=13;
 b2[1]=12;
@@ -119,6 +123,9 @@ pinMode(b1[3],INPUT);
 pinMode(equal,INPUT);
 pinMode(reset_b,INPUT);
   Serial.begin(9600);
+    lcd.begin();
+      lcd.backlight();
+        lcd.print("Lets calculate!");
 }
 
 
@@ -130,9 +137,13 @@ delay(10);
 if(bs[i]==HIGH)
 {
 //digitalWrite(l3[i],HIGH);
+lcd.setCursor(0,0);
+lcd.print("First number: ");
+//lcd.print();
 Serial.println("buton1 presed");
 //f1=1;
 a=i;
+lcd.print(a);
 Serial.print("first value=");
 Serial.println(a);
 }
@@ -153,18 +164,28 @@ if(bs1[i]==HIGH)
 {
 //digitalWrite(l1[i],HIGH);
 c=i;
-
+lcd.setCursor(0,1);
+lcd.print("Operation : ");
+//lcd.print();
 Serial.println("buton2 presed");
 Serial.print("operation selected=");
 //f2=1;
-if(c==0)
+if(c==0){
 Serial.println("+");
-else if(c==1)
+lcd.print("+");
+}
+else if(c==1){
 Serial.println("-");
-else if(c==2)
+lcd.print("-");
+}
+else if(c==2){
 Serial.println("*");
-else if(c==3)
-Serial.println("/");                                        
+lcd.print("*");
+}
+else if(c==3){
+Serial.println("/");  
+lcd.print("/"); 
+}                                     
 }}
 }
 
@@ -183,6 +204,9 @@ bb=i;
 //f3=1;
 
 //Serial.println(bb);
+lcd.setCursor(0,2);
+lcd.print("Second number: ");
+lcd.print(bb);
 Serial.println("buton3 presed");
 Serial.print("second value=");
 Serial.println(bb);
@@ -206,6 +230,10 @@ switch(c){
     d=a+bb;
   Serial.print("sum=");
   Serial.println(d);
+  lcd.setCursor(0,1);
+  lcd.clear();
+lcd.print("Sum of number:");
+lcd.print(d);
   e=d/10;
 f=d%10;
 
@@ -223,14 +251,17 @@ case 1:
     d=a-bb;
   Serial.print("difference=");
   Serial.println(d);
+  lcd.setCursor(0,1);
+lcd.print("Difference number:");
+
 
 if(d<0)
 {
   d=-d;
   digitalWrite(neg,HIGH);
-  
+  lcd.print(d);
 }
-
+lcd.print(d);
 
   e=d/10;
 f=d%10;
@@ -247,6 +278,11 @@ case 2:
     d=a*bb;
   Serial.print("product=");
   Serial.println(d);
+  lcd.setCursor(0,1);
+  lcd.clear();
+lcd.print("Product of number:");
+lcd.print(d);
+  
   e=d/10;
 f=d%10;
 
@@ -262,6 +298,11 @@ case 3:
   Serial.print("quotient=");
   digitalWrite(dot,HIGH);
   Serial.println(h);
+    lcd.setCursor(0,1);
+  lcd.clear();
+lcd.print("Quotient of number:");
+lcd.print(h);
+  
   d=h*10;
   e=d/10;
 f=(d)%10;
@@ -299,6 +340,10 @@ if(state2==HIGH)
   digitalWrite(dot,LOW);
   digitalWrite(neg,LOW);
  }
+     lcd.setCursor(0,1);
+  lcd.clear();
+lcd.print("Lets Calculate!");
+ 
  // 
  // delay(1000);
 }
