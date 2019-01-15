@@ -1,16 +1,29 @@
+
 #include <LiquidCrystal_I2C.h>
 
+// Set the LCD address to 0x27 for a 16 chars and 2 line display
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 
+// it is a calculator  which helps  students suffering from autism to perform single digit calculations
+//bs is state of row one buttons
+//bs1 states of operations
+// bs2 states of row two buttons
+//state1-state of equal steate 2-state of reset
+//a- first digit,b-second digit
 int bs[]={0,0,0,0,0,0,0,0,0,0};
 int bs1[]={0,0,0,0};
 int bs2[]={0,0,0,0,0,0,0,0,0,0};
 int state1=0,state2=0;
-int a,bb,e,f,c,i,neg,dot,d;
+int a,bb,e,f,c,i,neg,dot,d,x;
 float h;
-int b[10],l[10],b1[4],l1[4],b2[10],l2[10],l3[10],l4[10],equal,reset_b;
-LiquidCrystal_I2C lcd(0x27, 16, 2);
-
+int b[10],l[10],b1[4],l1[4],b2[10],l2[10],l3[10],l4[10],equal,reset;
+//l,b set of first row ledsand buttons
+//l1,b1 set of leds and buttons for operations
+//l2,b2 set of row2 leds and buttons
+//l3,l4 - set of output leds 
 void setup() {
+  // pins declaration start
+
 b2[0]=13;
 b2[1]=12;
 b2[2]=11;
@@ -27,7 +40,7 @@ b1[0]=A1;
 b1[1]=A2;
 b1[2]=A0;
 b1[3]=A4;
-reset_b=A7;
+reset=A7;
 dot=44;
 
 
@@ -68,64 +81,39 @@ l4[6]=29;
 l4[7]=27;
 l4[8]=25;
 l4[9]=23;
+// pins declaration ends
+for(int i=0;i<10;i++)
+pinMode(b[i],INPUT);
 
 
-pinMode(b[0],INPUT);
-pinMode(b[1],INPUT);
-pinMode(b[2],INPUT);
-pinMode(b[3],INPUT);
-pinMode(b[4],INPUT);
-pinMode(b[5],INPUT);
-pinMode(b[6],INPUT);
-pinMode(b[7],INPUT);
-pinMode(b[8],INPUT);
-pinMode(b[9],INPUT);
+for(int i=0;i<10;i++)
+pinMode(b2[i],INPUT);
+
+for(int i=0;i<10;i++)
+pinMode(l3[i],OUTPUT);
 
 
-pinMode(b2[0],INPUT);
-pinMode(b2[1],INPUT);
-pinMode(b2[2],INPUT);
-pinMode(b2[3],INPUT);
-pinMode(b2[4],INPUT);
-pinMode(b2[5],INPUT);
-pinMode(b2[6],INPUT);
-pinMode(b2[7],INPUT);
-pinMode(b2[8],INPUT);
-pinMode(b2[9],INPUT);
+for(int i=0;i<10;i++)
+pinMode(l4[i],OUTPUT);
 
-pinMode(l4[0],OUTPUT);
-pinMode(l4[1],OUTPUT);
-pinMode(l4[2],OUTPUT);
-pinMode(l4[3],OUTPUT);
-pinMode(l4[4],OUTPUT);
-pinMode(l4[5],OUTPUT);
-pinMode(l4[6],OUTPUT);
-pinMode(l4[7],OUTPUT);
-pinMode(l4[8],OUTPUT);
-pinMode(l4[9],OUTPUT);
-pinMode(l3[0],OUTPUT);
-pinMode(l3[1],OUTPUT);
-pinMode(l3[2],OUTPUT);
-pinMode(l3[3],OUTPUT);
-pinMode(l3[4],OUTPUT);
-pinMode(l3[5],OUTPUT);
-pinMode(l3[6],OUTPUT);
-pinMode(l3[7],OUTPUT);
-pinMode(l3[8],OUTPUT);
-pinMode(l3[9],OUTPUT);
+for(int i=0;i<10;i++)
+pinMode(l3[i],OUTPUT);
+
 pinMode(dot,OUTPUT);
 pinMode(neg,OUTPUT);
 
-pinMode(b1[0],INPUT);
-pinMode(b1[1],INPUT);
-pinMode(b1[2],INPUT);
-pinMode(b1[3],INPUT);
+for(int i=0;i<4;i++)
+pinMode(b1[i],INPUT);
+
 pinMode(equal,INPUT);
-pinMode(reset_b,INPUT);
+pinMode(reset,INPUT);
   Serial.begin(9600);
-    lcd.begin();
-      lcd.backlight();
-        lcd.print("Lets calculate!");
+  lcd.begin();
+      lcd.print("Lets calculate!");
+  // Turn on the blacklight and print a message.
+  lcd.backlight();
+ 
+  
 }
 
 
@@ -138,7 +126,7 @@ if(bs[i]==HIGH)
 {
 //digitalWrite(l3[i],HIGH);
 lcd.setCursor(0,0);
-lcd.print("First number: ");
+lcd.print("First number : ");
 //lcd.print();
 Serial.println("buton1 presed");
 //f1=1;
@@ -146,6 +134,10 @@ a=i;
 lcd.print(a);
 Serial.print("first value=");
 Serial.println(a);
+x = i;
+ Serial.write(x); 
+ 
+
 }
 
   }
@@ -164,6 +156,9 @@ if(bs1[i]==HIGH)
 {
 //digitalWrite(l1[i],HIGH);
 c=i;
+x=10+i;
+ Serial.write(x); 
+
 lcd.setCursor(0,1);
 lcd.print("Operation : ");
 //lcd.print();
@@ -201,6 +196,9 @@ if(bs2[i]==HIGH)
   {Serial.println(i);
 //digitalWrite(l4[i],HIGH);
 bb=i;
+x=14+i;
+Serial.write(x); 
+
 //f3=1;
 
 //Serial.println(bb);
@@ -318,48 +316,35 @@ break;
 }  
   
 }
+
 }
 
-
-
-
-state2=digitalRead(reset_b);
+state2=digitalRead(reset);
 //Serial.println(state2);
 
 
 if(state2==HIGH)
 {
-  //Serial.print("loop func");
- // digitalWrite(l[on1],LOW);
- // digitalWrite(l1[on2],LOW);
- // digita,lWrite(l2[on3],LOW);
+  
  for(i=0;i<10;i++)
  {
   digitalWrite(l3[i],LOW);
   digitalWrite(l4[i],LOW);
   digitalWrite(dot,LOW);
   digitalWrite(neg,LOW);
+  x=25;
+  Serial.write(x);
+  
+
  }
      lcd.setCursor(0,1);
   lcd.clear();
 lcd.print("Lets Calculate!");
  
- // 
- // delay(1000);
-}
-
-
-
 
 }
 
 
 
 
-
-
-
-
-
-
-  
+}
